@@ -30,6 +30,9 @@ pub enum QueryPlan {
     /// `VACUUM [TABLE] <name>` — reclaim space from soft-deleted rows and
     /// rebuild the table's indexes (maintenance statement).
     Vacuum(VacuumPlan),
+    /// `ANALYZE [TABLE] <name>` — collect column-level histograms, HLL distinct
+    /// counts, and row statistics to persist in `sys_statistics` for the CBO.
+    Analyze(AnalyzePlan),
     ShowTables,
     ShowDatabases,
     UseDatabase(String),
@@ -519,6 +522,7 @@ impl QueryPlan {
             | QueryPlan::DropView(_)
             | QueryPlan::CreateTableAsSelect(_)
             | QueryPlan::Vacuum(_)
+            | QueryPlan::Analyze(_)
             | QueryPlan::SetOperation(_) => "DDL",
             QueryPlan::ShowTables | QueryPlan::ShowDatabases => "DQL",
             QueryPlan::UseDatabase(_) => "DDL",
@@ -546,6 +550,7 @@ impl QueryPlan {
             QueryPlan::SetOperation(_) => "SetOperation",
             QueryPlan::DropDatabase(_) => "DropDatabase",
             QueryPlan::Vacuum(_) => "Vacuum",
+            QueryPlan::Analyze(_) => "Analyze",
             QueryPlan::ShowTables => "ShowTables",
             QueryPlan::ShowDatabases => "ShowDatabases",
             QueryPlan::UseDatabase(_) => "UseDatabase",
