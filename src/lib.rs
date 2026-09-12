@@ -1,13 +1,14 @@
-/// RookDB SQL Query Plan AST — shared between parser, planner, and execution engine.
-///
-/// This crate defines the typed intermediate representation of parsed SQL statements.
-/// It replaces the earlier JSON-based wire format between `rook-parser` and `rookdb-cli`.
+//! RookDB SQL Query Plan AST — shared between parser, planner, and execution engine.
+//!
+//! This crate defines the typed intermediate representation of parsed SQL statements.
+//! It replaces the earlier JSON-based wire format between `rook-parser` and `rookdb-cli`.
 
 use serde::{Deserialize, Serialize};
 
 // ── Top-level query plan ──────────────────────────────────────────────────────
 
 /// The complete representation of a parsed SQL statement.
+#[allow(clippy::large_enum_variant)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum QueryPlan {
     Select(SelectPlan),
@@ -36,7 +37,7 @@ pub enum QueryPlan {
     Unknown(String),
 }
 
-/// Plan node for `VACUUM [TABLE] <table>`.
+/// Plan node for VACUUM [TABLE] <table>.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct VacuumPlan {
     pub table: String,
