@@ -26,11 +26,20 @@ pub enum QueryPlan {
     CreateTableAsSelect(CreateTableAsSelectPlan),
     SetOperation(SetOperationPlan),
     DropDatabase(DropDatabasePlan),
+    /// VACUUM [TABLE] <name> — reclaim space from soft-deleted rows and
+    /// rebuild the table's indexes (maintenance statement).
+    Vacuum(VacuumPlan),
     ShowTables,
     ShowDatabases,
     UseDatabase(String),
     /// Catch-all for statement types not yet modeled.
     Unknown(String),
+}
+
+/// Plan node for `VACUUM [TABLE] <table>`.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct VacuumPlan {
+    pub table: String,
 }
 
 // ── Expressions ───────────────────────────────────────────────────────────────
@@ -356,11 +365,22 @@ pub struct CreateDatabasePlan {
 }
 
 /// CREATE INDEX plan.
+/// Plan node for `CREATE INDEX [name] ON table (col [, col ...])`.
+///
+/// Multiple columns form a composite key (ANALYSIS.md Tier 2 #8).
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CreateIndexPlan {
     pub index_name: String,
     pub table_name: String,
-    pub column_name: String,
+    /// Indexed columns in key order (one entry = single-column index).
+    pub columns: Vec<String>,
+}
+
+impl CreateIndexPlan {
+    /// Convenience accessor for single-column indexes.
+    pub fn column_name(&self) -> &str {
+        self.columns.first().map(String::as_str).unwrap_or("")
+    }
 }
 
 /// DROP INDEX plan.
@@ -497,6 +517,7 @@ impl QueryPlan {
             |            QueryPlan::CreateView(_)
             | QueryPlan::DropView(_)
             | QueryPlan::CreateTableAsSelect(_)
+            | QueryPlan::Vacuum(_)
             | QueryPlan::SetOperation(_) => "DDL",
             QueryPlan::ShowTables | QueryPlan::ShowDatabases => "DQL",
             QueryPlan::UseDatabase(_) => "DDL",
@@ -523,6 +544,7 @@ impl QueryPlan {
             QueryPlan::CreateTableAsSelect(_) => "CreateTableAsSelect",
             QueryPlan::SetOperation(_) => "SetOperation",
             QueryPlan::DropDatabase(_) => "DropDatabase",
+            QueryPlan::Vacuum(_) => "Vacuum",
             QueryPlan::ShowTables => "ShowTables",
             QueryPlan::ShowDatabases => "ShowDatabases",
             QueryPlan::UseDatabase(_) => "UseDatabase",
