@@ -1,0 +1,9 @@
+[package]
+name = "rook-ast"
+version = "0.1.0"
+edition = "2024"
+description = "Shared AST types for RookDB SQL query plans"
+license = "Apache-2.0"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
