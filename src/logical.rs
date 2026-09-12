@@ -170,6 +170,11 @@ pub struct LogicalInsert {
     pub columns: Vec<String>,
     /// The SELECT plan that produces rows to insert.
     pub child: Box<LogicalPlan>,
+    /// For `INSERT ... VALUES`: the literal/expression rows, already expanded
+    /// to full table arity by the logical planner. When non-empty, the
+    /// physical planner ignores `child` and feeds these constants to the
+    /// insert operator.
+    pub values_rows: Vec<Vec<ExprNode>>,
 }
 
 /// A recursive CTE binding (`WITH RECURSIVE name AS (non_recursive UNION ALL recursive)`).
