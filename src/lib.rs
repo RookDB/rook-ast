@@ -46,6 +46,12 @@ pub struct VacuumPlan {
     pub table: String,
 }
 
+/// Plan node for `ANALYZE [TABLE] <table>`.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct AnalyzePlan {
+    pub table: String,
+}
+
 // ── Expressions ───────────────────────────────────────────────────────────────
 
 /// A literal constant value that can appear in expressions or predicates.
