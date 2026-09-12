@@ -27,7 +27,7 @@ pub enum QueryPlan {
     CreateTableAsSelect(CreateTableAsSelectPlan),
     SetOperation(SetOperationPlan),
     DropDatabase(DropDatabasePlan),
-    /// VACUUM [TABLE] <name> — reclaim space from soft-deleted rows and
+    /// `VACUUM [TABLE] <name>` — reclaim space from soft-deleted rows and
     /// rebuild the table's indexes (maintenance statement).
     Vacuum(VacuumPlan),
     ShowTables,
@@ -37,7 +37,7 @@ pub enum QueryPlan {
     Unknown(String),
 }
 
-/// Plan node for VACUUM [TABLE] <table>.
+/// Plan node for `VACUUM [TABLE] <table>`.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct VacuumPlan {
     pub table: String,
