@@ -99,6 +99,24 @@ pub enum ExprNode {
         when_then_pairs: Vec<(Box<ExprNode>, Box<ExprNode>)>,
         else_result: Option<Box<ExprNode>>,
     },
+    /// Comparison expression evaluating to a boolean value.
+    Compare {
+        left: Box<ExprNode>,
+        op: ComparisonOp,
+        right: Box<ExprNode>,
+    },
+    /// Logical AND / OR of two expressions.
+    Logical {
+        left: Box<ExprNode>,
+        op: BinaryOp,
+        right: Box<ExprNode>,
+    },
+    /// Logical NOT of an expression.
+    Not(Box<ExprNode>),
+    /// IS NULL expression.
+    IsNull(Box<ExprNode>),
+    /// IS NOT NULL expression.
+    IsNotNull(Box<ExprNode>),
 }
 
 /// An argument to a function call.
